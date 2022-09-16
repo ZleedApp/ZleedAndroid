@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/page_following"
+            android:checkable="true"
+            android:checked="true"
+            android:enabled="true"
+            android:icon="@drawable/ic_favorite"
+            android:title="Following" />
+        <item
+            android:id="@+id/page_explore"
+            android:checkable="true"
+            android:enabled="true"
+            android:icon="@drawable/ic_explore"
+            android:title="Explore" />
+        <item
+            android:id="@+id/page_categories"
+            android:checkable="true"
+            android:enabled="true"
+            android:icon="@drawable/ic_content_copy"
+            android:title="Categories" />
+        <item
+            android:id="@+id/page_settings"
+            android:checkable="true"
+            android:enabled="true"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+    </group>
+</menu>
