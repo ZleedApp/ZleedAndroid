@@ -1,15 +1,12 @@
 package com.zleed.app
 
 import android.content.pm.ActivityInfo
-import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -68,19 +65,21 @@ class ChannelActivity : AppCompatActivity() {
         }
 
         fullscreenButton.setOnClickListener { _ ->
-            val windowInsetsController = WindowCompat.getInsetsController(this.window, this.window.decorView)
+            val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
             windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
             if(!isFullScreenActive) {
                 isFullScreenActive = true
 
+                findViewById<TextView>(R.id.textView).visibility = View.GONE
+
                 windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-                this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             } else {
                 isFullScreenActive = false
 
                 windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-                this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             }
         }
 
@@ -91,15 +90,16 @@ class ChannelActivity : AppCompatActivity() {
         //videoView.setVideoURI(Uri.parse("https://strmd.eu1.zleed.ga/theclashfruit.m3u8"))
     }
 
+    // TODO: needs fixing
     override fun onBackPressed() {
         Toast.makeText(this, "It works! $isFullScreenActive", Toast.LENGTH_SHORT).show()
 
-        val windowInsetsController = WindowCompat.getInsetsController(this.window, this.window.decorView)
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         if(isFullScreenActive) {
             windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
             isFullScreenActive = false
         } else super.onBackPressed()

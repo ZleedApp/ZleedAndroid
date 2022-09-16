@@ -10,15 +10,18 @@
         android:id="@+id/videoView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+
         app:ad_marker_color="#FFC107"
         app:controller_layout_id="@layout/video_controller_view"
         app:hide_during_ads="true"
+        app:resize_mode="fill"
+        app:use_controller="true"
+
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:use_controller="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
