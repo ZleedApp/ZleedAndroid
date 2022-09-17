@@ -19,6 +19,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView
 
 class ChannelActivity : AppCompatActivity() {
     private var isFullScreenActive = false
+    private var player: ExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,23 +45,23 @@ class ChannelActivity : AppCompatActivity() {
             )
             .build()
 
-        val player = ExoPlayer.Builder(this).build()
+        player = ExoPlayer.Builder(this).build()
 
         videoView.player = player
 
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.play()
+        player!!.setMediaItem(mediaItem)
+        player!!.prepare()
+        player!!.play()
 
         videoStateButton.setOnClickListener { _ ->
-            if(player.isPlaying) {
+            if(player!!.isPlaying) {
                 videoStateButton.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
 
-                player.pause()
+                player!!.pause()
             } else {
                 videoStateButton.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
 
-                player.play()
+                player!!.play()
             }
         }
 
@@ -94,6 +95,7 @@ class ChannelActivity : AppCompatActivity() {
     override fun onBackPressed() {
         Toast.makeText(this, "It works! $isFullScreenActive", Toast.LENGTH_SHORT).show()
 
+
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
@@ -102,6 +104,11 @@ class ChannelActivity : AppCompatActivity() {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
             isFullScreenActive = false
-        } else super.onBackPressed()
+        } else {
+            player!!.stop()
+            player!!.clearMediaItems()
+
+            super.onBackPressed()
+        }
     }
 }
