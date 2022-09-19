@@ -1,12 +1,156 @@
 package com.zleed.app
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.navigation.NavigationView
+import de.hdodenhof.circleimageview.CircleImageView
+import java.util.concurrent.Executors
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var appBarLayout: AppBarLayout
+    private lateinit var toolBar: MaterialToolbar
+
+    private lateinit var navigationView: NavigationView
+    private lateinit var drawerLayout: DrawerLayout
+
+    private lateinit var drawerToggle: ActionBarDrawerToggle
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val sharedPreferences = getSharedPreferences("ZleedAppData", MODE_PRIVATE)
+
+        if(!sharedPreferences.getBoolean("isLoggedIn", false)) {
+            val i1 = Intent()
+
+            i1.setClass(this, AuthActivity::class.java)
+            startActivity(i1)
+            finish()
+        }
+
+        appBarLayout = findViewById(R.id.appBarLayout);
+        toolBar      = findViewById(R.id.toolBar);
+
+        navigationView = findViewById(R.id.navigationView);
+        drawerLayout   = findViewById(R.id.drawerLayout);
+
+        setSupportActionBar(toolBar)
+
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+
+        supportActionBar!!.subtitle = "Following"
+
+        drawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolBar, R.string.app_name, R.string.app_name)
+
+        drawerLayout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+
+        navigationView.setNavigationItemSelectedListener(this)
+
+        val headerView: View = navigationView.getHeaderView(0)
+
+        val profileImage: CircleImageView = headerView.findViewById(R.id.imageViewProfile)
+        val profileName: TextView         = headerView.findViewById(R.id.textViewUserName)
+        val profileEmail: TextView        = headerView.findViewById(R.id.textViewUserEmail)
+
+        val executor = Executors.newSingleThreadExecutor()
+        val handler  = Handler(Looper.getMainLooper())
+
+        var image: Bitmap? = null
+
+        executor.execute {
+            val imageURL = "https://cdn.discordapp.com/avatars/394888268446957569/cef07171a56563effc4e10e59bdb2a83.webp?size=512"
+
+            try {
+                val `in` = java.net.URL(imageURL).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+
+                handler.post {
+                    profileImage.setImageBitmap(image)
+                }
+            }
+
+            catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.page_following -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                navigationView.setCheckedItem(R.id.page_following)
+
+                supportActionBar!!.subtitle = item.title
+
+                return true
+            }
+
+            R.id.page_explore -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                navigationView.setCheckedItem(R.id.page_explore)
+
+                supportActionBar!!.subtitle = item.title
+
+                return true
+            }
+
+            R.id.page_categories -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                navigationView.setCheckedItem(R.id.page_categories)
+
+                supportActionBar!!.subtitle = item.title
+
+                return true
+            }
+
+            R.id.page_settings -> {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                navigationView.setCheckedItem(R.id.page_settings)
+
+                supportActionBar!!.subtitle = item.title
+
+                return true
+            }
+
+            R.id.page_logout -> {
+                val sharedPreferences = getSharedPreferences("ZleedAppData", MODE_PRIVATE)
+                val sharedPreferencesEditor = sharedPreferences.edit()
+
+                sharedPreferencesEditor.remove("isLoggedIn")
+                sharedPreferencesEditor.remove("jwtToken")
+                sharedPreferencesEditor.remove("jwtExpires")
+
+                sharedPreferencesEditor.apply()
+
+                val i1 = Intent()
+
+                i1.setClass(this, AuthActivity::class.java)
+                startActivity(i1)
+                finish()
+
+                return true
+            }
+        }
+
+        return false
     }
 }

@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Zleed"
         tools:targetApi="31">
         <activity
+            android:name=".AuthActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChannelActivity"
             android:exported="false" />
         <activity
