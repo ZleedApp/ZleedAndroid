@@ -13,10 +13,17 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
+import com.zleed.app.classes.ZleedSingleton
+import com.zleed.app.fragments.HomeFragment
+import com.zleed.app.fragments.SettingsFragment
 import de.hdodenhof.circleimageview.CircleImageView
+import org.json.JSONObject
 import java.util.concurrent.Executors
 
 
@@ -70,10 +77,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val profileName: TextView         = headerView.findViewById(R.id.textViewUserName)
         val profileEmail: TextView        = headerView.findViewById(R.id.textViewUserEmail)
 
+        val jsonObjectRequest = object : JsonObjectRequest(Method.GET, "https://zleed.ga/api/v1/user/@me", null,
+            { response ->
+                val responseJsonObject = JSONObject(response.toString())
+
+                if(responseJsonObject.getInt("status") == 0) {
+                    val i1 = Intent()
+
+                    i1.setClass(this, AuthActivity::class.java)
+                    startActivity(i1)
+                    finish()
+                } else {
+                    val dataJsonObject = responseJsonObject.getJSONObject("data")
+
+                    profileName.text = dataJsonObject.getString("userDisplayName")
+                    profileEmail.text = dataJsonObject.getString("userEmail")
+                }
+            },
+            { error ->
+                // TODO: Handle error
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer ${sharedPreferences.getString("jwtToken", "missing")}"
+                return headers
+            }
+        }
+
+        ZleedSingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
+
+        /*
         val executor = Executors.newSingleThreadExecutor()
         val handler  = Handler(Looper.getMainLooper())
 
-        var image: Bitmap? = null
+        var image: Bitmap?
 
         executor.execute {
             val imageURL = "https://cdn.discordapp.com/avatars/394888268446957569/cef07171a56563effc4e10e59bdb2a83.webp?size=512"
@@ -91,15 +129,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 e.printStackTrace()
             }
         }
+        */
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val drawerFragmentTransaction = supportFragmentManager.beginTransaction()
+
         when(item.itemId) {
             R.id.page_following -> {
                 drawerLayout.closeDrawer(GravityCompat.START)
                 navigationView.setCheckedItem(R.id.page_following)
 
                 supportActionBar!!.subtitle = item.title
+
+                val homeFragment = HomeFragment.newInstance()
+
+                drawerFragmentTransaction
+                    .replace(R.id.fragmentContainerView, homeFragment)
+                    .commit()
 
                 return true
             }
@@ -127,6 +174,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navigationView.setCheckedItem(R.id.page_settings)
 
                 supportActionBar!!.subtitle = item.title
+
+                val settingsFragment = SettingsFragment()
+
+                drawerFragmentTransaction
+                    .replace(R.id.fragmentContainerView, settingsFragment)
+                    .commit()
 
                 return true
             }
