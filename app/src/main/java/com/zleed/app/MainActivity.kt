@@ -16,6 +16,8 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.zleed.app.classes.NetworkUtils
 import com.zleed.app.classes.ZleedSingleton
 import com.zleed.app.fragments.HomeFragment
 import com.zleed.app.fragments.SettingsFragment
@@ -71,6 +73,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val profileImage: CircleImageView = headerView.findViewById(R.id.imageViewProfile)
         val profileName: TextView         = headerView.findViewById(R.id.textViewUserName)
         val profileEmail: TextView        = headerView.findViewById(R.id.textViewUserEmail)
+
+        NetworkUtils().checkInternetWithSnackbar(this, drawerLayout, "Unable to connect to the internet.");
 
         val jsonObjectRequest = object : JsonObjectRequest(Method.GET, "https://zleed.ga/api/v1/user/@me", null,
             { response ->
