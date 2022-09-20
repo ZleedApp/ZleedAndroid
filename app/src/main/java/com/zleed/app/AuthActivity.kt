@@ -13,7 +13,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.zleed.app.classes.ZleedSingleton
 import org.json.JSONObject
 
-
 class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

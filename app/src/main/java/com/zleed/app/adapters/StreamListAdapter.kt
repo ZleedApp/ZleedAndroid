@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-
 class StreamListAdapter(private val streamList: ArrayList<String>) : RecyclerView.Adapter<StreamListAdapter.StreamHolder?>() {
 
     class StreamHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {

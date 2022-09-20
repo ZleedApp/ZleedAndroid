@@ -13,7 +13,6 @@ import com.zleed.app.ChannelActivity
 import com.zleed.app.R
 import com.zleed.app.adapters.StreamListAdapter
 
-
 class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +29,7 @@ class HomeFragment : Fragment() {
 
         val recyclerView: RecyclerView = layoutInflater.findViewById(R.id.recyclerView)
 
-        val videoList: ArrayList<String> = ArrayList<String>();
+        val videoList: ArrayList<String> = ArrayList()
 
         videoList.add("1a")
         videoList.add("2a")
@@ -42,7 +41,7 @@ class HomeFragment : Fragment() {
         val listAdapter = StreamListAdapter(videoList)
         recyclerView.adapter = listAdapter
 
-        openButton.setOnClickListener { _ ->
+        openButton.setOnClickListener {
             val i1 = Intent()
 
             i1.setClass(requireContext(), ChannelActivity::class.java)

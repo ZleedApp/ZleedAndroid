@@ -1,11 +1,8 @@
 package com.zleed.app
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -13,8 +10,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.android.volley.Request
-import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
@@ -24,8 +21,6 @@ import com.zleed.app.fragments.HomeFragment
 import com.zleed.app.fragments.SettingsFragment
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
-import java.util.concurrent.Executors
-
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -51,11 +46,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
         }
 
-        appBarLayout = findViewById(R.id.appBarLayout);
-        toolBar      = findViewById(R.id.toolBar);
+        appBarLayout = findViewById(R.id.appBarLayout)
+        toolBar      = findViewById(R.id.toolBar)
 
-        navigationView = findViewById(R.id.navigationView);
-        drawerLayout   = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView)
+        drawerLayout   = findViewById(R.id.drawerLayout)
 
         setSupportActionBar(toolBar)
 
@@ -106,6 +101,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         ZleedSingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
+
+        ZleedSingleton.getInstance(this).imageLoader.get("https://cdn.discordapp.com/avatars/394888268446957569/cef07171a56563effc4e10e59bdb2a83.webp?size=512", object : ImageLoader.ImageListener {
+            override fun onResponse(response: ImageLoader.ImageContainer?, isImmediate: Boolean) {
+                if (response != null) {
+                    profileImage.setImageBitmap(response.bitmap)
+                }
+            }
+
+            override fun onErrorResponse(error: VolleyError?) {
+                Log.d("imageLoader", "wtf are you doing, you either don't have internet or the url is fucking wrong, btw the error is: ${error.toString()}")
+            }
+        })
 
         /*
         val executor = Executors.newSingleThreadExecutor()

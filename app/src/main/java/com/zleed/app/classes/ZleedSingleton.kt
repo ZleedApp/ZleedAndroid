@@ -19,11 +19,12 @@ class ZleedSingleton constructor(context: Context) {
                 }
             }
     }
+
     val imageLoader: ImageLoader by lazy {
         ImageLoader(requestQueue,
             object : ImageLoader.ImageCache {
-                private val cache = LruCache<String, Bitmap>(20)
-                override fun getBitmap(url: String): Bitmap {
+                private val cache = LruCache<String, Bitmap>(1024)
+                override fun getBitmap(url: String): Bitmap? {
                     return cache.get(url)
                 }
                 override fun putBitmap(url: String, bitmap: Bitmap) {
@@ -31,9 +32,11 @@ class ZleedSingleton constructor(context: Context) {
                 }
             })
     }
-    val requestQueue: RequestQueue by lazy {
+
+    private val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
     }
+
     fun <T> addToRequestQueue(req: Request<T>) {
         requestQueue.add(req)
     }

@@ -9,13 +9,13 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.StyledPlayerView
-
 
 class ChannelActivity : AppCompatActivity() {
     private var isFullScreenActive = false
@@ -28,7 +28,7 @@ class ChannelActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.BLACK
 
-        val videoView = findViewById<StyledPlayerView>(R.id.videoView);
+        val videoView = findViewById<StyledPlayerView>(R.id.videoView)
 
         val videoStateButton = findViewById<ImageButton>(R.id.buttonVideoState)
         val fullscreenButton = findViewById<ImageButton>(R.id.buttonFullscreen)
@@ -53,19 +53,19 @@ class ChannelActivity : AppCompatActivity() {
         player!!.prepare()
         player!!.play()
 
-        videoStateButton.setOnClickListener { _ ->
+        videoStateButton.setOnClickListener {
             if(player!!.isPlaying) {
-                videoStateButton.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                videoStateButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_play, null))
 
                 player!!.pause()
             } else {
-                videoStateButton.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
+                videoStateButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_pause, null))
 
                 player!!.play()
             }
         }
 
-        fullscreenButton.setOnClickListener { _ ->
+        fullscreenButton.setOnClickListener {
             val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
             windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
@@ -84,7 +84,7 @@ class ChannelActivity : AppCompatActivity() {
             }
         }
 
-        settingsButton.setOnClickListener { _ ->
+        settingsButton.setOnClickListener {
             Toast.makeText(this, "It works!", Toast.LENGTH_SHORT).show()
         }
 
@@ -94,7 +94,6 @@ class ChannelActivity : AppCompatActivity() {
     // TODO: needs fixing
     override fun onBackPressed() {
         Toast.makeText(this, "It works! $isFullScreenActive", Toast.LENGTH_SHORT).show()
-
 
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
